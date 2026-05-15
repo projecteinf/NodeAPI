@@ -19,5 +19,5 @@ Technology: NodeJS with Express
 Language: TypeScript
 URL: localhost
 Port: 3000
-Location: /home/isard/Projectes/mini-webapi 
+Location: /home/isard/Projectes/NodeAPI/Applications/HelloWorld/AI
 ```
