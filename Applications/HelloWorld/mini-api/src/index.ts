@@ -1,10 +1,16 @@
+import express, { Express, Request, Response } from "express";
 
-import express from "express";
+/*
 
-const app = express();
-const port = 3000;
+  Express , Request i Response són tipus de dades 
+  express -> funció que s'executa per a crear una aplicació de tipus Express
+  
+*/
 
-app.get("/", (req, res) => {
+const app: Express = express();
+const port: number = 3000;
+
+app.get("/", (req: Request, res: Response) => {
   res.json({ message: "API funcionant correctament" });
 });
 
