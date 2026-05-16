@@ -10,7 +10,7 @@ import express, { Express, Request, Response } from "express";
 const app: Express = express();
 const port: number = 3000;
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/", (_req: Request, res: Response) => { // _req  → petició rebuda però no utilitzada
   res.json({ message: "API funcionant correctament" });
 });
 
