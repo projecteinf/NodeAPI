@@ -1,21 +1,25 @@
 import express, { Express, Request, Response } from "express";
-import { apiInfo } from "./config/api"
-
-
-/*
-
-  Express , Request i Response són tipus de dades 
-  express -> funció que s'executa per a crear una aplicació de tipus Express
-  
-*/
+import { apiInfo } from "./config/api";
+import { getEnvironment } from "./config/environment";
 
 const app: Express = express();
-const port: number = 3000;
 
-app.get("/", (_req: Request, res: Response) => { // _req  → petició rebuda però no utilitzada
-  res.json({ apiInfo });
+const PORT: number = 3000;
+const environment = getEnvironment();
+
+app.get("/", (_req: Request, res: Response) => {
+  res.status(200).json({
+    name: apiInfo.name,
+    version: apiInfo.version,
+    status: "OK",
+    description: apiInfo.description,
+    resources: apiInfo.resources,
+    meta: {
+      environment
+    }
+  });
 });
 
-app.listen(port, () => {
-  console.log(`Servidor escoltant a http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`Servidor escoltant a http://localhost:${PORT}`);
 });
