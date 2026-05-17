@@ -1,4 +1,6 @@
 import express, { Express, Request, Response } from "express";
+import { apiInfo } from "./config/api"
+
 
 /*
 
@@ -11,7 +13,7 @@ const app: Express = express();
 const port: number = 3000;
 
 app.get("/", (_req: Request, res: Response) => { // _req  → petició rebuda però no utilitzada
-  res.json({ message: "API funcionant correctament" });
+  res.json({ apiInfo });
 });
 
 app.listen(port, () => {
