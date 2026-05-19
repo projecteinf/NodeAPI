@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import { apiInfo } from "./config/api";
 import { getEnvironment } from "./config/environment";
+import { tracks } from "./data/track";
 
 const app: Express = express();
 
@@ -19,6 +20,26 @@ app.get("/", (_req: Request, res: Response) => {
     }
   });
 });
+
+app.get("/tracks", (_req: Request, res: Response) => {
+  res.status(200).json(tracks);
+});
+
+
+app.get("/tracks/:id", (req: Request, res: Response) => {
+  const id:string = req.params.id as string;
+
+  const track = tracks.find((track) => track.id === id);
+
+  if (!track) {
+    return res.status(404).json({
+      message: "Track not found"
+    });
+  }
+
+  res.status(200).json(track);
+});
+
 
 app.listen(PORT, () => {
   console.log(`Servidor escoltant a http://localhost:${PORT}`);
