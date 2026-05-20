@@ -107,6 +107,25 @@ app.put(
   }
 );
 
+app.delete(
+  "/tracks/:id",
+  (req: Request<{ id: string }>, res: Response) => {
+    const id: string = req.params.id as string;
+
+    const trackIndex = tracks.findIndex((track) => track.id === id);
+
+    if (trackIndex === -1) {
+      return res.status(404).json({
+        message: "Track not found"
+      });
+    }
+
+    tracks.splice(trackIndex, 1);
+
+    return res.status(204).send();
+  }
+);
+
 app.listen(PORT, () => {
   console.log(`Servidor escoltant a http://localhost:${PORT}`);
 });
