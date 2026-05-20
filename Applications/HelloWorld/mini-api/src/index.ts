@@ -1,12 +1,18 @@
 import express, { Express, Request, Response } from "express";
+import { randomUUID } from "node:crypto";
 import { apiInfo } from "./config/api";
 import { getEnvironment } from "./config/environment";
 import { tracks } from "./data/track";
-
+import { isCreateTrackInput } from "./validators/track";
+import { CreateTrackInput } from "./types/track/createTrack";
+import { Track } from "./types/track/track";
+import { CreateTrackResponse } from "./types/track/trackResponse";
 const app: Express = express();
-
 const PORT: number = 3000;
 const environment = getEnvironment();
+
+app.use(express.json());  // Per poder llegir el body (JSON) de les peticions
+
 
 app.get("/", (_req: Request, res: Response) => {
   res.status(200).json({
@@ -27,19 +33,48 @@ app.get("/tracks", (_req: Request, res: Response) => {
 
 
 app.get("/tracks/:id", (req: Request, res: Response) => {
-  const id:string = req.params.id as string;
+  const trackInput: Partial<CreateTrackInput> = req.body;
 
-  const track = tracks.find((track) => track.id === id);
+    if (!isCreateTrackInput(trackInput)) {
+      return res.status(400).json({
+        message: "Invalid track data"
+      });
+    }
 
-  if (!track) {
-    return res.status(404).json({
-      message: "Track not found"
-    });
-  }
+    const newTrack: Track = {
+      id: randomUUID(),
+      ...trackInput
+    };
 
-  res.status(200).json(track);
+    tracks.push(newTrack);
+
+    return res.status(201).json(newTrack);
 });
 
+app.post(
+  "/tracks",
+  (
+    req: Request<{}, CreateTrackResponse, Partial<CreateTrackInput>>,
+    res: Response<CreateTrackResponse>
+  ) => {
+    const trackInput: Partial<CreateTrackInput> = req.body;
+
+    if (!isCreateTrackInput(trackInput)) {
+      return res.status(400).json({
+        message: "Invalid track data"
+      });
+    }
+
+    const newTrack: Track = {
+      id: randomUUID(),
+      ...trackInput
+    };
+
+    tracks.push(newTrack);
+
+    return res.status(201).json(newTrack);
+  }
+);
 
 app.listen(PORT, () => {
   console.log(`Servidor escoltant a http://localhost:${PORT}`);
