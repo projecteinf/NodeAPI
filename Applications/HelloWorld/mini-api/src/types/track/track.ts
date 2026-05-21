@@ -1,6 +1,5 @@
-export type Track = {
-  id: string;
-  title: string;
-  artist: string;
-  duration: number;
+import { CreateTrackInput } from "./createTrack";
+
+export interface Track extends CreateTrackInput{
+  id: string;  
 };
