@@ -1,9 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { tracks } from "../data/track";
 import { Track } from "../types/track/track";
-import { isCreateTrackInput } from "../validators/track";
 import { CreateTrackInput } from "../types/track/createTrack";
-import { ErrorResponse } from "../types/error/errorResponse";
+
 
 export function getAllTracks(): Track[] {
     return tracks;

@@ -4,7 +4,7 @@ export const tracks: Track[] = [
   {
     id: "trk-0001",
     title: "Blinding Lights",
-    artist: "The Weeknd",
+    artist: "The Weekend",
     duration: 200
   },
   {
