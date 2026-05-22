@@ -1,13 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import { trackRouter } from "./routes/trackRoutes";
-
-import { apiInfo } from "./config/api";
 import { getEnvironment } from "./config/environment";
-import { tracks } from "./data/track";
-import { isCreateTrackInput } from "./validators/track";
-import { CreateTrackInput } from "./types/track/createTrack";
-import { Track } from "./types/track/track";
-import { TrackResponse } from "./types/track/trackResponse";
+
 
 
 const app: Express = express();
