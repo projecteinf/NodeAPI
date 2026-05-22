@@ -1,5 +1,7 @@
 #!/bin/bash
 
+date
+
 # Eliminar processos anteriors en execució
 lsof -i :3000 -sTCP:LISTEN |awk 'NR > 1 {print $2}'  | xargs kill -15 2>/dev/null 1>/dev/null
 

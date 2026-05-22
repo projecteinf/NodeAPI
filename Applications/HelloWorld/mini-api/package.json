@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development tsx src/index.ts",
+    "dev": "cross-env NODE_ENV=development tsx src/server.ts",
     "test": "cross-env NODE_ENV=test echo \"Tests pendents\"",
     "build": "tsc",
-    "start": "cross-env NODE_ENV=production node dist/index.js"
+    "start": "cross-env NODE_ENV=production node dist/server.js"
   },
   "keywords": [],
   "author": "",
