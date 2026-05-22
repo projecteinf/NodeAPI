@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "**********************************************Obtenir tots els tracks"
 curl -i http://localhost:3000/tracks
 

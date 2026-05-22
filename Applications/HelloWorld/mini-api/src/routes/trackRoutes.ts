@@ -1,12 +1,16 @@
 import { Router } from "express";
 import {
-  getTracks,
-  getTrackById,
-  // putTrack,
-  // deleteTrack
+  getTracksController,
+  getTrackByIdController,
+  createTrackController,
+  putTrackController,
+  deleteTrackController
 } from "../controllers/trackController";
 
 export const trackRouter = Router();
 
-trackRouter.get("/", getTracks);
-trackRouter.get("/:id", getTrackById);
+trackRouter.get("/", getTracksController);
+trackRouter.get("/:id", getTrackByIdController);
+trackRouter.post("/", createTrackController);
+trackRouter.put("/:id", putTrackController);
+trackRouter.delete("/:id", deleteTrackController);
