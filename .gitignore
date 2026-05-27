@@ -1,3 +1,4 @@
 .obsidian
 Applications/**/node_modules/
 result.md
+Applications/HelloWorld/mini-api/**/
