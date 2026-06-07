@@ -1,12 +1,13 @@
 import { getAllTracks, createTrack, updateTrack, deleteTrack, findTrackById } from "../services/trackService";
 import { Request, Response } from "express";
+import { TrackResponse } from "../types/track/trackResponse";
 
 export async function getTracksController(
   _req: Request,
   res: Response
 ): Promise<Response> {
   try {
-    const tracks = await getAllTracks();
+    const tracks:TrackResponse[] = await getAllTracks();
 
     return res.status(200).json(tracks);
   } catch (error) {
@@ -25,7 +26,7 @@ export async function getTrackByIdController(
   try {
     const  id : string = req.params.id as string;
 
-    const track = await findTrackById(id);
+    const track:TrackResponse | null = await findTrackById(id);
 
     if (!track) {
       return res.status(404).json({
@@ -48,7 +49,7 @@ export async function createTrackController(
   res: Response
 ): Promise<Response> {
   try {
-    const createdTrack = await createTrack(req.body);
+    const createdTrack:TrackResponse = await createTrack(req.body);
 
     return res.status(201).json(createdTrack);
   } catch (error) {
@@ -67,7 +68,7 @@ export async function updateTrackController(
   try {
     const  id : string = req.params.id as string;
 
-    const updatedTrack = await updateTrack(id, req.body);
+    const updatedTrack:TrackResponse | null = await updateTrack(id, req.body);
 
     if (!updatedTrack) {
       return res.status(404).json({
@@ -92,7 +93,7 @@ export async function deleteTrackController(
   try {
     const  id : string = req.params.id as string;
 
-    const deleted = await deleteTrack(id);
+    const deleted:boolean = await deleteTrack(id);
 
     if (!deleted) {
       return res.status(404).json({

@@ -1,11 +1,12 @@
 import { CreateTrackInput } from "../types/track/createTrack";
 import { TrackResponse } from "../types/track/trackResponse";
 import { getConnectionPool, sql } from "../config/database";
+import { ConnectionPool, IResult } from "mssql";
 
 export async function getAllTracks(): Promise<TrackResponse[]> {
-  const pool = await getConnectionPool();
+  const pool:ConnectionPool = await getConnectionPool();
 
-  const result = await pool.request().query<TrackResponse>(`
+  const result:IResult<TrackResponse> = await pool.request().query<TrackResponse>(`
     SELECT
       CONVERT(NVARCHAR(36), Tracks.id) AS id,
       title,
@@ -22,9 +23,9 @@ export async function getAllTracks(): Promise<TrackResponse[]> {
 export async function findTrackById(
   id: string
 ): Promise<TrackResponse | null> {
-  const pool = await getConnectionPool();
+  const pool:ConnectionPool = await getConnectionPool();
 
-  const result = await pool
+  const result:IResult<TrackResponse> = await pool
     .request()
     .input("id", sql.UniqueIdentifier, id)
     .query<TrackResponse>(`
@@ -44,9 +45,9 @@ export async function findTrackById(
 export async function createTrack(
   input: CreateTrackInput
 ): Promise<TrackResponse> {
-  const pool = await getConnectionPool();
+  const pool:ConnectionPool = await getConnectionPool();
 
-  const insertResult = await pool
+  const insertResult:IResult<{ id: string }> = await pool
     .request()
     .input("title", sql.NVarChar(200), input.title)
     .input("artistId", sql.UniqueIdentifier, input.artistId)
@@ -58,9 +59,9 @@ export async function createTrack(
       VALUES (@title, @artistId, @albumId, @durationSeconds);
     `);
 
-  const createdId = insertResult.recordset[0].id;
+  const createdId:string = insertResult.recordset[0].id;
 
-  const createdTrack = await findTrackById(createdId);
+  const createdTrack:TrackResponse | null = await findTrackById(createdId);
 
   if (!createdTrack) {
     throw new Error("Track was created but could not be retrieved.");
@@ -73,7 +74,7 @@ export async function updateTrack(
   id: string,
   input: CreateTrackInput
 ): Promise<TrackResponse | null> {
-  const pool = await getConnectionPool();
+  const pool:ConnectionPool = await getConnectionPool();
 
   const result = await pool
     .request()
@@ -94,7 +95,7 @@ export async function updateTrack(
       SELECT @@ROWCOUNT AS affectedRows;
     `);
 
-  const affectedRows = result.recordset[0]?.affectedRows ?? 0;
+  const affectedRows:number = result.recordset[0]?.affectedRows ?? 0;
 
   if (affectedRows === 0) {
     return null;
@@ -106,7 +107,7 @@ export async function updateTrack(
 export async function deleteTrack(id: string): Promise<boolean> {
   const pool = await getConnectionPool();
 
-  const result = await pool
+  const result:IResult<{affectedRows:number}> = await pool
     .request()
     .input("id", sql.UniqueIdentifier, id)
     .query<{ affectedRows: number }>(`
@@ -116,7 +117,7 @@ export async function deleteTrack(id: string): Promise<boolean> {
       SELECT @@ROWCOUNT AS affectedRows;
     `);
 
-  const affectedRows = result.recordset[0]?.affectedRows ?? 0;
+  const affectedRows:number = result.recordset[0]?.affectedRows ?? 0;
 
   return affectedRows > 0;
 }
