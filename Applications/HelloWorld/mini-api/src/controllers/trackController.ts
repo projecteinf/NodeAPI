@@ -1,66 +1,73 @@
+import { getAllTracks, createTrack, updateTrack, deleteTrack, findTrackById } from "../services/trackService";
 import { Request, Response } from "express";
-import {    getAllTracks,
-            findTrackById,
-            createTrack,
-            updateTrack,
-            deleteTrack
- } from "../services/trackService";
-import { TrackResponse } from "../types/track/trackResponse";
-import { CreateTrackInput } from "../types/track/createTrack";
-import { isCreateTrackInput } from "../validators/track";
-import { Track } from "../types/track/track";
 
+export async function getTracksController(
+  _req: Request,
+  res: Response
+): Promise<Response> {
+  try {
+    const tracks = await getAllTracks();
 
-export function getTracksController(_req: Request, res: Response) {
-  const allTracks:Track[] = getAllTracks();
+    return res.status(200).json(tracks);
+  } catch (error) {
+    console.error(error);
 
-  return res.status(200).json(allTracks);
-}
-
-export function getTrackByIdController(req: Request, res: Response<TrackResponse>) {
-  const id:string = req.params.id as string;
-
-  const track:Track | undefined = findTrackById(id);
-
-  if (!track) {
-    return res.status(404).json({
-      message: "Track not found"
+    return res.status(500).json({
+      message: "Internal server error"
     });
   }
-
-  return res.status(200).json(track);
 }
 
-export function createTrackController(
-  req: Request<{}, TrackResponse, Partial<CreateTrackInput>>,
-  res: Response<TrackResponse> ) {
-  const trackInput: Partial<CreateTrackInput> = req.body;
+export async function getTrackByIdController(
+  req: Request,
+  res: Response
+): Promise<Response> {
+  try {
+    const  id : string = req.params.id as string;
 
-  if (!isCreateTrackInput(trackInput))  {
-    return res.status(400).json({
-      message: "Invalid track data"
-    });
-  }
+    const track = await findTrackById(id);
 
-  const newTrack:Track = createTrack(trackInput);
-
-  return res.status(201).json(newTrack);
-}
-
-export function putTrackController(
-  req: Request<{ id: string}, TrackResponse, Partial<CreateTrackInput>>,
-  res: Response<TrackResponse> ) {
-
-    const id:string = req.params.id as string;
-    const trackInput: Partial<CreateTrackInput> = req.body;
-
-    if (!isCreateTrackInput(trackInput))  {
-      return res.status(400).json({
-        message: "Invalid track data"
+    if (!track) {
+      return res.status(404).json({
+        message: "Track not found"
       });
     }
-    
-    const updatedTrack:Track | undefined = updateTrack(id, trackInput);
+
+    return res.status(200).json(track);
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Internal server error"
+    });
+  }
+}
+
+export async function createTrackController(
+  req: Request,
+  res: Response
+): Promise<Response> {
+  try {
+    const createdTrack = await createTrack(req.body);
+
+    return res.status(201).json(createdTrack);
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Internal server error"
+    });
+  }
+}
+
+export async function updateTrackController(
+  req: Request,
+  res: Response
+): Promise<Response> {
+  try {
+    const  id : string = req.params.id as string;
+
+    const updatedTrack = await updateTrack(id, req.body);
 
     if (!updatedTrack) {
       return res.status(404).json({
@@ -69,19 +76,36 @@ export function putTrackController(
     }
 
     return res.status(200).json(updatedTrack);
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Internal server error"
+    });
   }
+}
 
-  export function deleteTrackController(req: Request<{ id: string }>, res: Response)  {
+export async function deleteTrackController(
+  req: Request,
+  res: Response
+): Promise<Response> {
+  try {
+    const  id : string = req.params.id as string;
 
-    const id: string = req.params.id as string;   
-    
-    if (deleteTrack(id)) {
-     return res.status(204).send();
-    }
-    else {
+    const deleted = await deleteTrack(id);
+
+    if (!deleted) {
       return res.status(404).json({
         message: "Track not found"
       });
     }
-    
+
+    return res.status(204).send();
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Internal server error"
+    });
   }
+}

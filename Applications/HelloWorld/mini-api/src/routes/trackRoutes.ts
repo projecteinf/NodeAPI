@@ -3,7 +3,7 @@ import {
   getTracksController,
   getTrackByIdController,
   createTrackController,
-  putTrackController,
+  updateTrackController,
   deleteTrackController
 } from "../controllers/trackController";
 
@@ -12,5 +12,5 @@ export const trackRouter = Router();
 trackRouter.get("/", getTracksController);
 trackRouter.get("/:id", getTrackByIdController);
 trackRouter.post("/", createTrackController);
-trackRouter.put("/:id", putTrackController);
+trackRouter.put("/:id", updateTrackController);
 trackRouter.delete("/:id", deleteTrackController);

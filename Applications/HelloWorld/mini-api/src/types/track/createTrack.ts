@@ -1,5 +1,6 @@
 export interface CreateTrackInput {
-    title: string;
-    artist: string;
-    duration: number;
-  };
+  title: string;
+  artistId: string;
+  albumId?: string | null;
+  durationSeconds: number;
+};
