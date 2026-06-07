@@ -8,13 +8,11 @@ export async function getAllTracks(): Promise<TrackResponse[]> {
   const result = await pool.request().query<TrackResponse>(`
     SELECT
       CONVERT(NVARCHAR(36), Tracks.id) AS id,
-      Tracks.title,
-      Artists.name AS artist,
-      Albums.title AS album,
-      Tracks.durationSeconds
+      title,
+      artistid,
+      albumid,
+      durationSeconds
     FROM Tracks
-    INNER JOIN Artists ON Tracks.artistId = Artists.id
-    LEFT JOIN Albums ON Tracks.albumId = Albums.id
     ORDER BY Tracks.title;
   `);
 
@@ -32,13 +30,11 @@ export async function findTrackById(
     .query<TrackResponse>(`
       SELECT
         CONVERT(NVARCHAR(36), Tracks.id) AS id,
-        Tracks.title,
-        Artists.name AS artist,
-        Albums.title AS album,
-        Tracks.durationSeconds
+        title,
+        artistid,
+        albumid,
+        durationSeconds
       FROM Tracks
-      INNER JOIN Artists ON Tracks.artistId = Artists.id
-      LEFT JOIN Albums ON Tracks.albumId = Albums.id
       WHERE Tracks.id = @id;
     `);
 
