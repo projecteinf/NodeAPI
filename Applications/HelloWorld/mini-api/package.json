@@ -9,7 +9,6 @@
     "build": "tsc",
     "start": "cross-env NODE_ENV=production node dist/server.js",
     "db:test": "tsx src/scripts/testDatabaseConnection.ts"
-    
   },
   "keywords": [],
   "author": "",
@@ -18,7 +17,8 @@
     "cross-env": "^10.1.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "mssql": "^12.5.5"
+    "mssql": "^12.5.5",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
