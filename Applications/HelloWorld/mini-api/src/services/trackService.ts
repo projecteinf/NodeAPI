@@ -1,12 +1,12 @@
 import { CreateTrackInput } from "../types/track/createTrack";
-import { TrackResponse } from "../types/track/trackResponse";
 import { getConnectionPool, sql } from "../config/database";
 import { ConnectionPool, IResult } from "mssql";
+import { Track } from "../types/track/track";
 
-export async function getAllTracks(): Promise<TrackResponse[]> {
+export async function getAllTracks(): Promise<Track[]> {
   const pool:ConnectionPool = await getConnectionPool();
 
-  const result:IResult<TrackResponse> = await pool.request().query<TrackResponse>(`
+  const result:IResult<Track> = await pool.request().query<Track>(`
     SELECT
       CONVERT(NVARCHAR(36), Tracks.id) AS id,
       title,
@@ -22,13 +22,13 @@ export async function getAllTracks(): Promise<TrackResponse[]> {
 
 export async function findTrackById(
   id: string
-): Promise<TrackResponse | null> {
+): Promise<Track | null> {
   const pool:ConnectionPool = await getConnectionPool();
 
-  const result:IResult<TrackResponse> = await pool
+  const result:IResult<Track> = await pool
     .request()
     .input("id", sql.UniqueIdentifier, id)
-    .query<TrackResponse>(`
+    .query<Track>(`
       SELECT
         CONVERT(NVARCHAR(36), Tracks.id) AS id,
         title,
@@ -44,7 +44,7 @@ export async function findTrackById(
 
 export async function createTrack(
   input: CreateTrackInput
-): Promise<TrackResponse> {
+): Promise<Track> {
   const pool:ConnectionPool = await getConnectionPool();
 
   const insertResult:IResult<{ id: string }> = await pool
@@ -61,7 +61,7 @@ export async function createTrack(
 
   const createdId:string = insertResult.recordset[0].id;
 
-  const createdTrack:TrackResponse | null = await findTrackById(createdId);
+  const createdTrack:Track | null = await findTrackById(createdId);
 
   if (!createdTrack) {
     throw new Error("Track was created but could not be retrieved.");
@@ -73,7 +73,7 @@ export async function createTrack(
 export async function updateTrack(
   id: string,
   input: CreateTrackInput
-): Promise<TrackResponse | null> {
+): Promise<Track | null> {
   const pool:ConnectionPool = await getConnectionPool();
 
   const result = await pool
