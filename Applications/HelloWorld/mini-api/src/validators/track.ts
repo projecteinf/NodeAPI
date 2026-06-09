@@ -5,7 +5,7 @@ export function isCreateTrackInput(
   ): data is CreateTrackInput {
     return (
       typeof data.title === "string" &&
-      typeof data.artist === "string" &&
-      typeof data.duration === "number"
+      typeof data.artistId === "string" &&
+      typeof data.durationSeconds === "number"
     );
   }

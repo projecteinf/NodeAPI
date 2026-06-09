@@ -10,8 +10,8 @@ export async function getAllTracks(): Promise<Track[]> {
     SELECT
       CONVERT(NVARCHAR(36), Tracks.id) AS id,
       title,
-      artistid,
-      albumid,
+      CONVERT(NVARCHAR(36), artistId) AS artistId,
+      CONVERT(NVARCHAR(36), albumId) AS albumId,
       durationSeconds
     FROM Tracks
     ORDER BY Tracks.title;
@@ -32,8 +32,8 @@ export async function findTrackById(
       SELECT
         CONVERT(NVARCHAR(36), Tracks.id) AS id,
         title,
-        artistid,
-        albumid,
+        CONVERT(NVARCHAR(36), artistId) AS artistId,
+        CONVERT(NVARCHAR(36), albumId) AS albumId,
         durationSeconds
       FROM Tracks
       WHERE Tracks.id = @id;
