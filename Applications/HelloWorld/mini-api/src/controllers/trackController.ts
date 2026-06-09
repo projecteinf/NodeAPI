@@ -1,13 +1,14 @@
 import { getAllTracks, createTrack, updateTrack, deleteTrack, findTrackById } from "../services/trackService";
 import { Request, Response } from "express";
 import { Track } from "../types/track/track";
+import { TrackDto } from "../types/track/trackDTO";
 
 export async function getTracksController(
   _req: Request,
   res: Response
 ): Promise<Response> {
   try {
-    const tracks:Track[] = await getAllTracks();
+    const tracks:TrackDto[] = await getAllTracks();
 
     return res.status(200).json(tracks);
   } catch (error) {
@@ -26,7 +27,7 @@ export async function getTrackByIdController(
   try {
     const  id : string = req.params.id as string;
 
-    const track:Track | null = await findTrackById(id);
+    const track:TrackDto | null = await findTrackById(id);
 
     if (!track) {
       return res.status(404).json({
@@ -49,7 +50,7 @@ export async function createTrackController(
   res: Response
 ): Promise<Response> {
   try {
-    const createdTrack:Track = await createTrack(req.body);
+    const createdTrack:TrackDto = await createTrack(req.body);
 
     return res.status(201).json(createdTrack);
   } catch (error) {
@@ -68,7 +69,7 @@ export async function updateTrackController(
   try {
     const  id : string = req.params.id as string;
 
-    const updatedTrack:Track | null = await updateTrack(id, req.body);
+    const updatedTrack:TrackDto | null = await updateTrack(id, req.body);
 
     if (!updatedTrack) {
       return res.status(404).json({

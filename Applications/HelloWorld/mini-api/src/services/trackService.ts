@@ -2,18 +2,21 @@ import { CreateTrackInput } from "../types/track/createTrack";
 import { getConnectionPool, sql } from "../config/database";
 import { ConnectionPool, IResult } from "mssql";
 import { Track } from "../types/track/track";
+import { TrackDto } from "../types/track/trackDTO";
 
-export async function getAllTracks(): Promise<Track[]> {
+export async function getAllTracks(): Promise<TrackDto[]> {
   const pool:ConnectionPool = await getConnectionPool();
 
-  const result:IResult<Track> = await pool.request().query<Track>(`
-    SELECT
-      CONVERT(NVARCHAR(36), Tracks.id) AS id,
-      title,
-      CONVERT(NVARCHAR(36), artistId) AS artistId,
-      CONVERT(NVARCHAR(36), albumId) AS albumId,
-      durationSeconds
-    FROM Tracks
+  const result:IResult<TrackDto> = await pool.request().query<TrackDto>(`
+      SELECT
+        Tracks.id,
+        Tracks.title,
+        Artists.name AS artist,
+        Albums.title AS album,
+        Tracks.durationSeconds
+      FROM Tracks
+      INNER JOIN Artists ON Tracks.artistId = Artists.id
+      LEFT JOIN Albums ON Tracks.albumId = Albums.id
     ORDER BY Tracks.title;
   `);
 
@@ -22,20 +25,22 @@ export async function getAllTracks(): Promise<Track[]> {
 
 export async function findTrackById(
   id: string
-): Promise<Track | null> {
+): Promise<TrackDto | null> {
   const pool:ConnectionPool = await getConnectionPool();
 
-  const result:IResult<Track> = await pool
+  const result:IResult<TrackDto> = await pool
     .request()
     .input("id", sql.UniqueIdentifier, id)
-    .query<Track>(`
+    .query<TrackDto>(`
       SELECT
-        CONVERT(NVARCHAR(36), Tracks.id) AS id,
-        title,
-        CONVERT(NVARCHAR(36), artistId) AS artistId,
-        CONVERT(NVARCHAR(36), albumId) AS albumId,
-        durationSeconds
+        Tracks.id,
+        Tracks.title,
+        Artists.name AS artist,
+        Albums.title AS album,
+        Tracks.durationSeconds
       FROM Tracks
+      INNER JOIN Artists ON Tracks.artistId = Artists.id
+      LEFT JOIN Albums ON Tracks.albumId = Albums.id
       WHERE Tracks.id = @id;
     `);
 
@@ -44,7 +49,7 @@ export async function findTrackById(
 
 export async function createTrack(
   input: CreateTrackInput
-): Promise<Track> {
+): Promise<TrackDto> {
   const pool:ConnectionPool = await getConnectionPool();
 
   const insertResult:IResult<{ id: string }> = await pool
@@ -61,7 +66,7 @@ export async function createTrack(
 
   const createdId:string = insertResult.recordset[0].id;
 
-  const createdTrack:Track | null = await findTrackById(createdId);
+  const createdTrack:TrackDto | null = await findTrackById(createdId);
 
   if (!createdTrack) {
     throw new Error("Track was created but could not be retrieved.");
@@ -73,7 +78,7 @@ export async function createTrack(
 export async function updateTrack(
   id: string,
   input: CreateTrackInput
-): Promise<Track | null> {
+): Promise<TrackDto | null> {
   const pool:ConnectionPool = await getConnectionPool();
 
   const result = await pool
