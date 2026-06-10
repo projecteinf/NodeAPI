@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from "express";
 import { apiInfo } from "./config/api";
 import { getEnvironment } from "./config/environment";
 import { trackRouter } from "./routes/trackRoutes";
+import { errorHandler } from "./middlewares/errorHandler";
 
 export const app: Express = express();
 
@@ -23,3 +24,5 @@ app.get("/", (_req: Request, res: Response) => {
 });
 
 app.use("/tracks", trackRouter);
+
+app.use(errorHandler);

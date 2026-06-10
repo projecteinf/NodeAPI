@@ -1,29 +1,27 @@
 import { getAllTracks, createTrack, updateTrack, deleteTrack, findTrackById } from "../services/trackService";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { TrackDto } from "../types/track/trackDTO";
 
 
 export async function getTracksController(
   _req: Request,
-  res: Response
-): Promise<Response> {
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> {
   try {
     const tracks:TrackDto[] = await getAllTracks();
 
     return res.status(200).json(tracks);
   } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      message: "Internal server error"
-    });
+      next(error);
   }
 }
 
 export async function getTrackByIdController(
   req: Request,
-  res: Response
-): Promise<Response> {
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> {
      
     const  id : string = req.params.id as string;
   
@@ -39,35 +37,30 @@ export async function getTrackByIdController(
       return res.status(200).json(track);
       
     } catch (error) {
-      console.error(error);
-
-      return res.status(500).json({
-        message: "Internal server error"
-      });
-  }
+        next(error);
+    }
 }
 
 export async function createTrackController(
   req: Request,
-  res: Response
-): Promise<Response> {
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> {
+     
   try {
     const createdTrack: TrackDto = await createTrack(req.body);
 
     return res.status(201).json(createdTrack);
-  } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      message: "Internal server error"
-    });
-  }
+   } catch (error) {
+        next(error);
+    }
 }
 
 export async function updateTrackController(
   req: Request,
-  res: Response
-): Promise<Response> {
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> {
   
   const  id : string = req.params.id as string;
  
@@ -83,18 +76,15 @@ export async function updateTrackController(
 
     return res.status(200).json(updatedTrack);
   } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      message: "Internal server error"
-    });
+    next(error);
   }
 }
 
 export async function deleteTrackController(
   req: Request,
-  res: Response
-): Promise<Response> {
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> {
   
   const  id : string = req.params.id as string;
 
@@ -109,10 +99,6 @@ export async function deleteTrackController(
 
     return res.status(204).send();
   } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      message: "Internal server error"
-    });
+    next(error);
   }
 }
