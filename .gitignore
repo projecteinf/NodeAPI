@@ -1,5 +1,6 @@
 .obsidian
 Applications/**/node_modules/
-result.md
+/**/result.md
+/**/results.md
 Applications/HelloWorld/mini-api/data/
 /**/.env
