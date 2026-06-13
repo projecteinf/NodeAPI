@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { ErrorCode, ErrorResponse } from "../types/error/errorResponse";
 
 export function errorHandler(
   error: unknown,
@@ -8,7 +9,10 @@ export function errorHandler(
 ): Response {
   console.error(error);
 
-  return res.status(500).json({
-    message: "Internal server error"
-  });
+  const response: ErrorResponse = {
+    message: "Internal server error",
+    code: ErrorCode.InternalServerError
+  };
+
+  return res.status(500).json(response);
 }

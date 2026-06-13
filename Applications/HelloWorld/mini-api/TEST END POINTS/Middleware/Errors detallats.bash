@@ -1,0 +1,168 @@
+#!/bin/bash
+# ====================================================================================================================== TEST GET AMB ERROR
+
+echo -e  "GET track by ID => NOT FOUND: FE3C4F2A-1111-4908-B4D8-AFD5C9989656"
+curl -i http://localhost:3000/tracks/FE3C4F2A-1111-4908-B4D8-AFD5C9989656
+
+echo -e  "\n=====================================================================================================================\n"
+
+echo -e  "GET track by ID => INVALID ID: 12345"
+curl -i http://localhost:3000/tracks/12345
+
+# ===================================================================================================================== TEST POST - Obtenir ID creat per resta de proves
+
+echo -e  "\n=====================================================================================================================\n"
+
+echo -e  "POST /tracks"
+IDALBUM="B66D3E63-30B5-4273-BB6A-778E94E9FDA9"
+IDARTIST="4A512A1D-3D1D-4E17-A144-5BBEF500717C"
+DATATRACK=$(cat <<EOF
+{
+  "title": "Don't Stop Me Now",
+  "artistId": "$IDARTIST",
+  "albumId": "$IDALBUM",
+  "durationSeconds": 209
+}
+EOF
+)
+
+IDCREATED=$(curl -X POST http://localhost:3000/tracks   -H "Content-Type: application/json"   -d "$DATATRACK" | cut -d":" -f 2 | cut -d "," -f1 | cut -d '"' -f2)
+
+# ===================================================================================================================== TEST POST AMB ERROR
+
+echo -e  "\n=====================================================================================================================\n"
+
+echo -e  "POST /tracks => INVALID BODY -> TITLE EMPTY"
+IDALBUM="B66D3E63-30B5-4273-BB6A-778E94E9FDA9"
+IDARTIST="4A512A1D-3D1D-4E17-A144-5BBEF500717C"
+DATATRACK=$(cat <<EOF
+{
+  "title": "",
+  "artistId": "$IDARTIST",
+  "durationSeconds": 209
+}
+EOF
+)
+curl -i -X POST http://localhost:3000/tracks   -H "Content-Type: application/json"   -d "$DATATRACK"
+
+echo -e  "\n=====================================================================================================================\n"
+
+echo -e  "POST /tracks => INVALID BODY -> DURATION INVALID"
+IDALBUM="B66D3E63-30B5-4273-BB6A-778E94E9FDA9"
+IDARTIST="4A512A1D-3D1D-4E17-A144-5BBEF500717C"
+DATATRACK=$(cat <<EOF
+{
+  "title": "Don't Stop Me Now",
+  "artistId": "$IDARTIST",
+  "durationSeconds": 0
+}
+EOF
+)
+curl -i -X POST http://localhost:3000/tracks   -H "Content-Type: application/json"   -d "$DATATRACK"
+
+
+echo -e  "\n=====================================================================================================================\n"
+
+echo -e  "POST /tracks => INVALID BODY -> ARTIST ID INVALID"
+IDALBUM="B66D3E63-30B5-4273-BB6A-778E94E9FDA9"
+IDARTIST="4A512A1D"
+DATATRACK=$(cat <<EOF
+{
+  "title": "Don't Stop Me Now",
+  "artistId": "$IDARTIST",
+  "durationSeconds": 0
+}
+EOF
+)
+curl -i -X POST http://localhost:3000/tracks   -H "Content-Type: application/json"   -d "$DATATRACK"
+
+
+# ===================================================================================================================== TEST PUT
+
+echo -e  "\n=====================================================================================================================\n"
+
+echo -e  "PUT /tracks => INVALID BODY -> TITLE EMPTY"
+IDALBUM="B66D3E63-30B5-4273-BB6A-778E94E9FDA9"
+IDARTIST="4A512A1D-3D1D-4E17-A144-5BBEF500717C"
+DATATRACK=$(cat <<EOF
+{
+  "title": "",
+  "artistId": "$IDARTIST",
+  "durationSeconds": 209
+}
+EOF
+)
+curl -i -X PUT http://localhost:3000/tracks/$IDCREATED \
+  -H "Content-Type: application/json" \
+  -d  "$DATATRACK"
+
+echo -e  "\n=====================================================================================================================\n"
+
+
+echo -e  "PUT /tracks => INVALID BODY -> DURATION INVALID NEGATIVE"
+IDALBUM="B66D3E63-30B5-4273-BB6A-778E94E9FDA9"
+IDARTIST="4A512A1D-3D1D-4E17-A144-5BBEF500717C"
+DATATRACK=$(cat <<EOF
+{
+  "title": "Don't Stop Me Now",
+  "artistId": "$IDARTIST",
+  "durationSeconds": -209
+}
+EOF
+)
+curl -i -X PUT http://localhost:3000/tracks/$IDCREATED \
+  -H "Content-Type: application/json" \
+  -d  "$DATATRACK"
+
+echo -e  "\n=====================================================================================================================\n"
+
+echo -e  "PUT /tracks => INVALID BODY -> DURATION INVALID ZERO"
+IDALBUM="B66D3E63-30B5-4273-BB6A-778E94E9FDA9"
+IDARTIST="4A512A1D-3D1D-4E17-A144-5BBEF500717C"
+DATATRACK=$(cat <<EOF
+{
+  "title": "Don't Stop Me Now",
+  "artistId": "$IDARTIST",
+  "durationSeconds": 0
+}
+EOF
+)
+curl -i -X PUT http://localhost:3000/tracks/$IDCREATED \
+  -H "Content-Type: application/json" \
+  -d  "$DATATRACK"
+
+
+
+# ===================================================================================================================== TEST DELETE
+
+echo -e  "\n=====================================================================================================================\n"
+
+echo -e  "DELETE /tracks/{id} - Eliminar cançó"
+curl -i -X DELETE http://localhost:3000/tracks/$IDCREATED 
+
+echo -e  "\n=====================================================================================================================\n"
+
+echo -e  "DELETE track by ID => NOT FOUND: $IDCREATED"
+curl -i -X DELETE http://localhost:3000/tracks/$IDCREATED 
+
+echo -e  "\n=====================================================================================================================\n"
+
+echo -e  "DELETE track by ID => INVALID ID: 12345"
+curl -i -X DELETE http://localhost:3000/tracks/12345
+
+
+# ===================================================================================================================== ERROR HANDLE
+
+CONTID=$(docker ps | tail -n1 | cut -c 1-12)
+
+echo -e  "\n=====================================================================================================================\n"
+echo -e  "STOP API CONTAINER TO SIMULATE ERROR 500"
+docker stop $CONTID > /dev/null
+
+echo -e  "GET ALL tracks => SIMULATE ERROR 500"
+curl -i http://localhost:3000/tracks
+
+echo -e  "\n=====================================================================================================================\n"
+
+echo -e  "START API CONTAINER"
+docker start $CONTID  > /dev/null

@@ -1,6 +1,7 @@
 import { getAllTracks, createTrack, updateTrack, deleteTrack, findTrackById } from "../services/trackService";
 import { NextFunction, Request, Response } from "express";
 import { TrackDto } from "../types/track/trackDTO";
+import { ErrorCode } from "../types/error/errorResponse";
 
 
 export async function getTracksController(
@@ -30,7 +31,8 @@ export async function getTrackByIdController(
 
       if (!track) {
         return res.status(404).json({
-          message: "Track not found"
+          message: "Track not found",
+          code: ErrorCode.TrackNotFound
         });
       }
 
@@ -70,7 +72,8 @@ export async function updateTrackController(
 
     if (!updatedTrack) {
       return res.status(404).json({
-        message: "Track not found"
+        message: "Track not found",
+        code: ErrorCode.TrackNotFound
       });
     }
 
@@ -93,7 +96,8 @@ export async function deleteTrackController(
 
     if (!deleted) {
       return res.status(404).json({
-        message: "Track not found"
+        message: "Track not found",
+        code: ErrorCode.TrackNotFound
       });
     }
 
