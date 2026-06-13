@@ -2,6 +2,7 @@ import { getAllTracks, createTrack, updateTrack, deleteTrack, findTrackById } fr
 import { NextFunction, Request, Response } from "express";
 import { TrackDto } from "../types/track/trackDTO";
 import { ErrorCode } from "../types/error/errorResponse";
+import { NotFoundError } from "../types/error/custom/BadRequestError";
 
 
 export async function getTracksController(
@@ -30,10 +31,7 @@ export async function getTrackByIdController(
       const track:TrackDto | null = await findTrackById(id);
 
       if (!track) {
-        return res.status(404).json({
-          message: "Track not found",
-          code: ErrorCode.TrackNotFound
-        });
+        throw new NotFoundError("Track not found", ErrorCode.TrackNotFound);
       }
 
       return res.status(200).json(track);
@@ -71,10 +69,7 @@ export async function updateTrackController(
     const updatedTrack:TrackDto | null = await updateTrack(id, req.body);
 
     if (!updatedTrack) {
-      return res.status(404).json({
-        message: "Track not found",
-        code: ErrorCode.TrackNotFound
-      });
+      throw new NotFoundError("Track not found", ErrorCode.TrackNotFound);
     }
 
     return res.status(200).json(updatedTrack);
@@ -95,10 +90,7 @@ export async function deleteTrackController(
     const deleted:boolean = await deleteTrack(id);
 
     if (!deleted) {
-      return res.status(404).json({
-        message: "Track not found",
-        code: ErrorCode.TrackNotFound
-      });
+      throw new NotFoundError("Track not found", ErrorCode.TrackNotFound);
     }
 
     return res.status(204).send();
