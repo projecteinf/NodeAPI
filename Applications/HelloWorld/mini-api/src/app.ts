@@ -3,6 +3,7 @@ import { apiInfo } from "./config/api";
 import { getEnvironment } from "./config/environment";
 import { trackRouter } from "./routes/trackRoutes";
 import { errorHandler } from "./middlewares/errorHandler";
+import { authRouter } from "./routes/authRoutes";
 
 export const app: Express = express();
 
@@ -24,5 +25,6 @@ app.get("/", (_req: Request, res: Response) => {
 });
 
 app.use("/tracks", trackRouter);
+app.use("/users", authRouter);
 
 app.use(errorHandler);

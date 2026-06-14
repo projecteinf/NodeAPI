@@ -186,6 +186,7 @@ curl -i -X PUT http://localhost:3000/tracks/$IDCREATED \
   -d  "$DATATRACK"
 
 
+
 # ===================================================================================================================== TEST DELETE
 
 echo -e  "\n=====================================================================================================================\n"
@@ -203,4 +204,31 @@ echo -e  "\n====================================================================
 echo -e  "DELETE track by ID => INVALID ID: 12345"
 curl -i -X DELETE http://localhost:3000/tracks/12345
 
+
+
+
+# ===================================================================================================================== NETEJA de dades
+
+echo -e  "\n=====================================================================================================================\n"
+echo -e  "Neteja de dades: Eliminar cançó creada i d'execucions anteriors"
+
+docker exec -it musiccloud-sqlserver /opt/mssql-tools18/bin/sqlcmd   -S localhost   -U sa   -P "Patata123!"   -No  \
+   -d MusicCloud   -Q "DELETE FROM Tracks WHERE title like '%Stop%';"
+
+
+# ===================================================================================================================== ERROR HANDLE
+
+CONTID=$(docker ps | tail -n1 | cut -c 1-12)
+
+echo -e  "\n=====================================================================================================================\n"
+echo -e  "STOP API CONTAINER TO SIMULATE ERROR 500"
+docker stop $CONTID > /dev/null
+
+echo -e  "GET ALL tracks => SIMULATE ERROR 500"
+curl -i http://localhost:3000/tracks
+
+echo -e  "\n=====================================================================================================================\n"
+
+echo -e  "START API CONTAINER"
+docker start $CONTID  > /dev/null
 

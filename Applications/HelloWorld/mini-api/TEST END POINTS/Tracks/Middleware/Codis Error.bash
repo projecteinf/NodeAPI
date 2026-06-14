@@ -260,6 +260,15 @@ echo -e  "DELETE track by ID => INVALID ID: 12345"
 RESUL=$(curl -s -o /dev/null -w "%{http_code}\n" -w "%{http_code}\n" -X DELETE http://localhost:3000/tracks/12345)
 print_result "DELETE track by ID => INVALID ID: 12345" "400 Bad Request" "$RESUL Bad Request" ""
 
+
+# ===================================================================================================================== NETEJA de dades
+
+echo -e  "\n=====================================================================================================================\n"
+echo -e  "Neteja de dades: Eliminar cançó creada i d'execucions anteriors"
+
+docker exec -it musiccloud-sqlserver /opt/mssql-tools18/bin/sqlcmd   -S localhost   -U sa   -P "Patata123!"   -No  \
+   -d MusicCloud   -Q "DELETE FROM Tracks WHERE title like '%Stop%';"
+
 # ===================================================================================================================== ERROR HANDLE
 
 CONTID=$(docker ps | tail -n1 | cut -c 1-12)

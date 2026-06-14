@@ -1,7 +1,6 @@
 import { CreateTrackInput } from "../types/track/createTrack";
 import { getConnectionPool, sql } from "../config/database";
 import { ConnectionPool, IResult } from "mssql";
-import { Track } from "../types/track/track";
 import { TrackDto } from "../types/track/trackDTO";
 
 export async function getAllTracks(): Promise<TrackDto[]> {
