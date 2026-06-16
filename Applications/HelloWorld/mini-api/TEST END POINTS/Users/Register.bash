@@ -22,7 +22,7 @@ echo "|---|---:|---:|---|---|" >> results.md
 
 echo -e  "\n=====================================================================================================================\n"
 
-echo -e  "POST /userss"
+echo -e  "POST /users"
 DATATRACK=$(cat <<EOF
 {
   "username": "miquel.boada",
