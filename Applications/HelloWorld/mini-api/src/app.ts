@@ -4,6 +4,7 @@ import { getEnvironment } from "./config/environment";
 import { trackRouter } from "./routes/trackRoutes";
 import { errorHandler } from "./middlewares/errorHandler";
 import { authRouter } from "./routes/authRoutes";
+import { playlistsRouter } from "./routes/playlistsRouter";
 
 export const app: Express = express();
 
@@ -26,5 +27,6 @@ app.get("/", (_req: Request, res: Response) => {
 
 app.use("/tracks", trackRouter);
 app.use("/users", authRouter);
+app.use("/playlists", playlistsRouter);
 
 app.use(errorHandler);

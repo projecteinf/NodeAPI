@@ -1,4 +1,3 @@
-import { Request } from "express";
 import { JwtPayload } from "jsonwebtoken";
 
 // Estenem globalment la interfície Request d'Express que ja existeix a node_modules
