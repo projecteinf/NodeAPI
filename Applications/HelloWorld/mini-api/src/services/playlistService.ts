@@ -3,6 +3,8 @@ import { ConnectionPool, IResult } from "mssql";
 import { BadRequestError } from "../types/error/custom/notFoundError";
 import { CreatePlaylistInput } from "../types/playlist/createPlaylist";
 import { PlayListDto } from "../types/playlist/playlistDTO";
+import { ForbiddenError } from "../types/error/custom/forbiddenError";
+import { NotFoundError } from "../types/error/custom/BadRequestError";
 
 
 
@@ -32,7 +34,6 @@ export async function createPlaylist(input: CreatePlaylistInput, userId: string)
       VALUES (@name, @description, @userId);
     `);
 
-
   const createdId:string = insertResult.recordset[0].id;
 
   const createdPlaylist:PlayListDto | null = await findPlayListById(createdId);
@@ -43,6 +44,38 @@ export async function createPlaylist(input: CreatePlaylistInput, userId: string)
 
   return createdPlaylist;
 
+}
+
+export async function deletePlaylist(idPlaylist: string, userId: string): Promise<boolean> {
+  const pool: ConnectionPool = await getConnectionPool();
+
+  const requiredPlaylist: IResult<{ userId: string }> = await pool
+    .request()
+    .input("id", sql.NVarChar(36), idPlaylist)
+    .query<{ userId: string }>("SELECT userId FROM PlayLists WHERE id = @id");
+
+    if (requiredPlaylist.recordset.length == 0) {
+        throw new NotFoundError("The requested play list does not exist");
+    }
+
+    
+    if (requiredPlaylist.recordset[0].userId !== userId) {
+      throw new ForbiddenError("You have no permissions to remove this playlist")
+    }
+
+
+    const result:IResult<{affectedRows:number}> = await pool
+      .request()
+      .input("id", sql.UniqueIdentifier, idPlaylist)
+      .query<{ affectedRows: number }>(`
+        DELETE FROM Playlists
+        WHERE id = @id;
+
+        SELECT @@ROWCOUNT AS affectedRows;
+      `);
+
+    const affectedRows:number = result.recordset[0]?.affectedRows ?? 0;    
+    return affectedRows > 0;
 }
 
 

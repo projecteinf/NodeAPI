@@ -31,7 +31,7 @@ export async function getTrackByIdController(
       const track:TrackDto | null = await findTrackById(id);
 
       if (!track) {
-        throw new NotFoundError("Track not found", ErrorCode.TrackNotFound);
+        throw new NotFoundError("Track not found", ErrorCode.NotFound);
       }
 
       return res.status(200).json(track);
@@ -69,7 +69,7 @@ export async function updateTrackController(
     const updatedTrack:TrackDto | null = await updateTrack(id, req.body);
 
     if (!updatedTrack) {
-      throw new NotFoundError("Track not found", ErrorCode.TrackNotFound);
+      throw new NotFoundError("Track not found", ErrorCode.NotFound);
     }
 
     return res.status(200).json(updatedTrack);
@@ -90,7 +90,7 @@ export async function deleteTrackController(
     const deleted:boolean = await deleteTrack(id);
 
     if (!deleted) {
-      throw new NotFoundError("Track not found", ErrorCode.TrackNotFound);
+      throw new NotFoundError("Track not found", ErrorCode.NotFound);
     }
 
     return res.status(204).send();
