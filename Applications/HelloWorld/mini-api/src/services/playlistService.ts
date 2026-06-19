@@ -141,6 +141,19 @@ export async function addTrackPlaylist(input: AddTrackPlaylistInput, userId: str
   await verifyPlaylistOwnership(input.playlistId,userId);
   await findTrackById(input.trackId);
   
+/*
+En el disseny de programari hi ha un principi fonamental anomenat DRY (Don't Repeat Yourself), que diu que cada peça de coneixement o lògica dins d'un sistema ha de tenir una representació única. Si crees una funció nova només per comprovar si el track existeix, estaràs duplicant codi (la mateixa consulta SELECT, el mateix tractament de l'error, etc.).
+
+Reutilitzar findTrackById té grans avantatges, especialment de cara a l'explicació amb els teus alumnes:
+1. Reutilització de codi i manteniment
+
+Si el dia de demà canvia la base de dades (per exemple, si el camp id passa a ser un altre tipus de dada, o si afegiu un control per no trobar tracks que hagin estat esborrats lògicament amb un deletedAt), només hauràs de modificar el codi a findTrackById. Si haguessis creat una funció a mida per a les carpetes, hauries de recordar-te d'anar a modificar els dos llocs.
+2. Gestió d'errors centralitzada
+
+Si la teva funció findTrackById ja està programada per llançar un NotFoundError quan el track no existeix, el teu nou servei de carpetes no ha de fer absolutament cap control d'errors extra. Simplement crides la funció i confies en el fet que, si l'ID és dolent, el programa tallarà l'execució i llançarà el 404 de manera automàtica.
+*/
+
+
 // Corregit el typo 'positioin' -> 'position'
   const insertResult: IResult<{ playlistId: string, trackId: string, position: number }> = await pool
     .request()
