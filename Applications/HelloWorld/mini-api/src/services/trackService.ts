@@ -3,22 +3,33 @@ import { getConnectionPool, sql } from "../config/database";
 import { ConnectionPool, IResult } from "mssql";
 import { TrackDto } from "../types/track/trackDTO";
 import { NotFoundError } from "../types/error/custom/BadRequestError";
+import { SearchTracksInput } from "../types/track/searchTracks";
 
-export async function getAllTracks(): Promise<TrackDto[]> {
+async function sqlSentence(query: SearchTracksInput, request:sql.Request): Promise<string> {
+   
+  
+  let queryText:string = `SELECT id, title, durationSeconds as duration FROM Tracks WHERE 1=1`;
+
+  if (query.search) {
+    request.input("search", sql.NVarChar(200), `%${query.search}%`);
+    queryText += ` AND title LIKE @search`; // Cerca parcial
+  }
+  
+  if (query.duration) {
+    request.input("duration", sql.Int, query.duration);
+    queryText += ` AND durationSeconds <= @duration`;     // Filtre exacte
+  }
+
+  return queryText + " ORDER BY Tracks.title";
+}
+
+export async function getAllTracks(input: SearchTracksInput): Promise<TrackDto[]> {
   const pool:ConnectionPool = await getConnectionPool();
+  const request:sql.Request = pool.request();
 
-  const result:IResult<TrackDto> = await pool.request().query<TrackDto>(`
-      SELECT
-        Tracks.id,
-        Tracks.title,
-        Artists.name AS artist,
-        Albums.title AS album,
-        Tracks.durationSeconds
-      FROM Tracks
-      INNER JOIN Artists ON Tracks.artistId = Artists.id
-      LEFT JOIN Albums ON Tracks.albumId = Albums.id
-    ORDER BY Tracks.title;
-  `);
+  
+  const queryString:string = await sqlSentence(input,request);
+  const result:IResult<TrackDto> = await request.query<TrackDto>(queryString);
 
   return result.recordset;
 }

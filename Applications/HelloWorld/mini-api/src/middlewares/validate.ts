@@ -35,7 +35,11 @@ export function validate(
     }
 
     if (source === "query") {
-      req.query = validationResult.data  as Request["query"];
+      for (const key in req.query) {
+        delete req.query[key];
+      }
+  
+      Object.assign(req.query, validationResult.data);
     }
 
     next();

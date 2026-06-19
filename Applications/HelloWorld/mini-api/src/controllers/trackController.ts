@@ -3,15 +3,17 @@ import { NextFunction, Request, Response } from "express";
 import { TrackDto } from "../types/track/trackDTO";
 import { ErrorCode } from "../types/error/errorResponse";
 import { NotFoundError } from "../types/error/custom/BadRequestError";
+import { SearchTracksInput } from "../types/track/searchTracks";
 
 
 export async function getTracksController(
-  _req: Request,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<Response | void> {
   try {
-    const tracks:TrackDto[] = await getAllTracks();
+    const querystring:SearchTracksInput = req.query;
+    const tracks:TrackDto[] = await getAllTracks(querystring);
 
     return res.status(200).json(tracks);
   } catch (error) {

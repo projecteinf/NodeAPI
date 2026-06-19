@@ -9,10 +9,11 @@ import {
 import { validate } from "../middlewares/validate";
 import { idParamSchema } from "../middlewares/validators/params/idParamSchema";
 import { createTrackSchema } from "../middlewares/validators/track/track";
+import { searchTracksSchema } from "../middlewares/validators/track/searchTracks";
 
 export const trackRouter = Router();
 
-trackRouter.get("/", getTracksController);
+trackRouter.get("/", validate(searchTracksSchema, "query"), getTracksController);
 
 trackRouter.get(
   "/:id",
