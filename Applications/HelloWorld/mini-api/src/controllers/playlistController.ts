@@ -2,7 +2,7 @@ import { NextFunction, Response, Request } from "express";
 import { UnauthorizedError } from "../types/error/custom/unauthorizedError";
 import { PlayListDto } from "../types/playlist/playlistDTO";
 import { CreatePlaylistInput } from "../types/playlist/createPlaylist";
-import { addTrackPlaylist, createPlaylist, deletePlaylist } from "../services/playlistService";
+import { addTrackPlaylist, createPlaylist, deletePlaylist, deleteTrackPlaylist } from "../services/playlistService";
 import { AddTrackPlaylistInput } from "../types/playlist/addTrackPlaylist";
 import { PlaylistTrackDto } from "../types/playlist/playlistTrackDTO";
 
@@ -78,5 +78,31 @@ export async function addTrackPlaylistController(
       next(error);
   }
 }
+
+export async function deleteTrackPlaylistController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> {
+
+  try {
+    if (!req.user || !req.user.id) {
+      throw new UnauthorizedError("User session not found or invalid token");
+    }
+
+    const userId = req.user.id as string;
+    
+    const  idPlaylist : string = req.params.idPlaylist as string;
+    const  idTrack : string = req.params.idTrack as string;
+    
+    const createdPlaylist:PlaylistTrackDto = await deleteTrackPlaylist(idPlaylist, idTrack, userId);
+
+    return res.status(201).json(createdPlaylist);
+  } catch (error) {
+      next(error);
+  }
+}
+
+
 
 

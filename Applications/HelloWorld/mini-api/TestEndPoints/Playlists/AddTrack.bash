@@ -16,12 +16,15 @@ function print_result {
 }
 
 function eliminar_playlists_tracks {
+  echo "Eliminar tots els tracks de la llista: $ELIMINAR"
+
   echo -e  "\n=====================================================================================================================\n"
 
   echo "Eliminar playliststracks"
 
   docker exec -it musiccloud-sqlserver /opt/mssql-tools18/bin/sqlcmd   -S localhost   -U sa   -P "Patata123!"   -No  \
       -d MusicCloud   -Q "DELETE FROM PlaylistTracks;" 2>/dev/null
+
 }
 
 function generar_token {
@@ -60,6 +63,8 @@ function executar_i_resultat {
   print_result "$ENDPOINT" "$EXPECTED" "$RESUL $TEXTRESUL" 
 
 }
+
+
 
 eliminar_playlists_tracks
 generar_token mboada35@boscdelacoma.cat
@@ -142,7 +147,7 @@ executar_i_resultat "POST /playlists" "404" ""
 
 echo -e  "\n=====================================================================================================================\n"
 
-echo -e  "POST /playlists/tracks amb id de track incorrecte"
+echo -e  "POST /playlists/tracks amb id de track (format) incorrecte"
 PLAYLISTID="EB00DFFC-236D-4731-B175-EDCA615877BD"
 TRACKID="50AD955C"
 # TRACKID="30D1A058-992A-4FD1-9AAD-56F5AC0422D1"
@@ -156,10 +161,9 @@ EOF
 
 executar_i_resultat "POST /playlists" "400" ""
 
-
 echo -e  "\n=====================================================================================================================\n"
 
-echo -e  "POST /playlists/tracks amb id de track incorrecte"
+echo -e  "POST /playlists/tracks amb id de playlist (format) incorrecte"
 PLAYLISTID="EB00DFFC"
 TRACKID="50AD955C-DA0E-4BB5-A509-1B0EBC91F75A"
 # TRACKID="30D1A058-992A-4FD1-9AAD-56F5AC0422D1"
@@ -173,7 +177,9 @@ EOF
 
 executar_i_resultat "POST /playlists" "400" ""
 
-echo -e  "POST /playlists/tracks amb id de track incorrecte"
+echo -e  "\n=====================================================================================================================\n"
+
+echo -e  "POST /playlists/tracks sense playlistId:"
 PLAYLISTID="EB00DFFC-236D-4731-B175-EDCA615877BD"
 TRACKID="50AD955C-DA0E-4BB5-A509-1B0EBC91F75A"
 # TRACKID="30D1A058-992A-4FD1-9AAD-56F5AC0422D1"
@@ -186,7 +192,9 @@ EOF
 
 executar_i_resultat "POST /playlists" "400" ""
 
-echo -e  "POST /playlists/tracks amb id de track incorrecte"
+echo -e  "\n=====================================================================================================================\n"
+
+echo -e  "POST /playlists/tracks sense trackId"
 PLAYLISTID="EB00DFFC-236D-4731-B175-EDCA615877BD"
 TRACKID="50AD955C-DA0E-4BB5-A509-1B0EBC91F75A"
 # TRACKID="30D1A058-992A-4FD1-9AAD-56F5AC0422D1"
@@ -198,6 +206,25 @@ EOF
 )
 
 executar_i_resultat "POST /playlists" "400" ""
+
+echo -e  "\n=====================================================================================================================\n"
+
+generar_token mboada35@xtec.cat
+
+echo -e  "POST /playlists/tracks amb id de track incorrecte"
+PLAYLISTID="EB00DFFC-236D-4731-B175-EDCA615877BD"
+TRACKID="50AD955C-DA0E-4BB5-A509-1B0EBC91F750"
+
+DATATRACK=$(cat <<EOF
+{
+  "playlistId": "$PLAYLISTID",
+  "trackId": "$TRACKID"
+}
+EOF
+)
+
+executar_i_resultat "POST /playlists" "403" ""
+
 cat results.md
 
 eliminar_playlists_tracks

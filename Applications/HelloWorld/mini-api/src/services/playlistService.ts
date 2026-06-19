@@ -178,3 +178,31 @@ Si la teva funció findTrackById ja està programada per llançar un NotFoundErr
 
   return playlistWithTracks;
 }
+
+
+
+export async function deleteTrackPlaylist(idPlaylist: string, idTrack:string, userId: string): Promise<PlaylistTrackDto> {
+  const pool: ConnectionPool = await getConnectionPool();
+
+  await verifyPlaylistOwnership(idPlaylist,userId);
+  await findTrackById(idTrack);
+
+  const result:IResult<{affectedRows:number}> = await pool
+      .request()
+      .input("idPlaylist", sql.UniqueIdentifier, idPlaylist)
+      .input("idTrack", sql.UniqueIdentifier, idTrack)
+      .query<{ affectedRows: number }>(`
+        DELETE FROM PlaylistTracks
+        WHERE trackId = @idTrack and playlistId=@idPlaylist ;
+
+        SELECT @@ROWCOUNT AS affectedRows;
+      `);
+
+  const playlistWithTracks:PlaylistTrackDto = await getTracksPlayList(idPlaylist);
+
+  if (!playlistWithTracks) {
+    throw new Error("Play list was created but could not be retrieved.");
+  }
+
+  return playlistWithTracks;
+}
