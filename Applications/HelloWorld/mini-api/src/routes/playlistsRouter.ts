@@ -2,10 +2,9 @@ import { Router } from "express";
 import { authenticateJWT } from "../middlewares/authMiddleware";
 import { validate } from "../middlewares/validate";
 import { createPlaylistkSchema } from "../middlewares/validators/playlists/playlist";
-import { createPlaylistController, deletePlaylistController } from "../controllers/playlistController";
+import { addTrackPlaylistController, createPlaylistController, deletePlaylistController } from "../controllers/playlistController";
 import { idParamSchema } from "../middlewares/validators/params/idParamSchema";
-
-
+import { addSongPlaylistSchema } from "../middlewares/validators/playlists/track";
 
 export const playlistsRouter = Router();
 
@@ -23,4 +22,11 @@ playlistsRouter.delete(
   authenticateJWT,
   validate(idParamSchema, "params"),
   deletePlaylistController
+);
+
+playlistsRouter.post(
+  "/tracks",
+  authenticateJWT,
+  validate(addSongPlaylistSchema, "body"),
+  addTrackPlaylistController
 );

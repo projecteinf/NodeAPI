@@ -221,4 +221,4 @@ executar_i_resultat "POST /playlists" "201" ""
 
 cat results.md
 
-eliminar_playlists
+# eliminar_playlists

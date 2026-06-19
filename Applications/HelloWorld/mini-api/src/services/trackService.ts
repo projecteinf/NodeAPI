@@ -2,6 +2,7 @@ import { CreateTrackInput } from "../types/track/createTrack";
 import { getConnectionPool, sql } from "../config/database";
 import { ConnectionPool, IResult } from "mssql";
 import { TrackDto } from "../types/track/trackDTO";
+import { NotFoundError } from "../types/error/custom/BadRequestError";
 
 export async function getAllTracks(): Promise<TrackDto[]> {
   const pool:ConnectionPool = await getConnectionPool();
@@ -42,6 +43,10 @@ export async function findTrackById(
       LEFT JOIN Albums ON Tracks.albumId = Albums.id
       WHERE Tracks.id = @id;
     `);
+
+  if ( result.recordset.length ==0 ) {
+    throw new NotFoundError("Track does not exist");
+  }
 
   return result.recordset[0] ?? null;
 }

@@ -5,6 +5,10 @@ import { CreatePlaylistInput } from "../types/playlist/createPlaylist";
 import { PlayListDto } from "../types/playlist/playlistDTO";
 import { ForbiddenError } from "../types/error/custom/forbiddenError";
 import { NotFoundError } from "../types/error/custom/BadRequestError";
+import { PlaylistTrackDto } from "../types/playlist/playlistTrackDTO";
+import { AddTrackPlaylistInput } from "../types/playlist/addTrackPlaylist";
+import { mapSqlRowsToPlaylistTrackDto } from "../mappers/playlistTrackMapper";
+import { findTrackById } from "./trackService";
 
 
 
@@ -43,7 +47,6 @@ export async function createPlaylist(input: CreatePlaylistInput, userId: string)
   }
 
   return createdPlaylist;
-
 }
 
 export async function deletePlaylist(idPlaylist: string, userId: string): Promise<boolean> {
@@ -95,4 +98,70 @@ export async function findPlayListById(
     `);
 
   return result.recordset[0] ?? null;
+}
+
+// Track management
+
+
+async function verifyPlaylistOwnership(playlistId: string, userId: string): Promise<void> {
+  const pool: ConnectionPool = await getConnectionPool();
+  
+  const playlist: IResult<{ userId: string }> = await pool
+    .request()
+    .input("id", sql.NVarChar(36), playlistId)
+    .query<{ userId: string }>("SELECT userId FROM PlayLists WHERE Id = @id");
+
+  if (playlist.recordset.length === 0) {
+      throw new NotFoundError("The required play list does not exist");
+  }
+  
+  if (playlist.recordset[0].userId !== userId) {
+    throw new ForbiddenError("You are not authorized to add tracks to this play list")
+  }
+}
+
+export async function getTracksPlayList(playlistId: string): Promise<PlaylistTrackDto> {
+  const pool: ConnectionPool = await getConnectionPool();
+  
+  const playlist: IResult<{ trackTile: string, playListName: string, trackId:string, playListId: string, position: number }[]> = await pool
+    .request()
+    .input("playlistId", sql.NVarChar(36), playlistId)
+    .query<{ trackTile: string, playListName: string, trackId:string, playListId: string, position: number }[]>(`
+        SELECT T.title as trackTitle, P.Name as playlistName, T.id as trackId, P.id as playlistId, PT.position as position 
+          FROM PlayLists as P inner join PlaylistTracks as PT on PT.playlistId = P.id inner join Tracks as T on T.id = PT.trackId 
+          WHERE P.id = @playlistId order by position`);
+
+  
+  return mapSqlRowsToPlaylistTrackDto(playlist.recordset);
+}
+
+export async function addTrackPlaylist(input: AddTrackPlaylistInput, userId: string): Promise<PlaylistTrackDto> {
+  const pool: ConnectionPool = await getConnectionPool();
+
+  await verifyPlaylistOwnership(input.playlistId,userId);
+  await findTrackById(input.trackId);
+  
+// Corregit el typo 'positioin' -> 'position'
+  const insertResult: IResult<{ playlistId: string, trackId: string, position: number }> = await pool
+    .request()
+    .input("playlistId", sql.NVarChar(100), input.playlistId)
+    .input("trackId", sql.NVarChar(500), input.trackId)
+    // Corregit també aquí el typo del genèric
+    .query<{ playlistId: string, trackId: string, position: number }>(`
+        INSERT INTO PlaylistTracks (playlistId, trackId, position)
+        OUTPUT INSERTED.playlistId, INSERTED.trackId, INSERTED.position
+        VALUES (
+            @playlistId, 
+            @trackId, 
+            (SELECT ISNULL(MAX(position), 0) + 1 FROM PlaylistTracks WHERE playlistId = @playlistId)
+        );
+    `);
+
+  const playlistWithTracks:PlaylistTrackDto = await getTracksPlayList(input.playlistId);
+
+  if (!playlistWithTracks) {
+    throw new Error("Play list was created but could not be retrieved.");
+  }
+
+  return playlistWithTracks;
 }
