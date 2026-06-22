@@ -12,15 +12,34 @@ async function sqlSentence(query: SearchTracksInput, request:sql.Request): Promi
 
   if (query.search) {
     request.input("search", sql.NVarChar(200), `%${query.search}%`);
-    queryText += ` AND title LIKE @search`; // Cerca parcial
+    queryText += ` AND title LIKE @search`; 
   }
   
   if (query.duration) {
     request.input("duration", sql.Int, query.duration);
-    queryText += ` AND durationSeconds <= @duration`;     // Filtre exacte
+    queryText += ` AND durationSeconds <= @duration`;     
   }
 
-  return queryText + " ORDER BY Tracks.title";
+  let orderByColumn = "Tracks.title"; // Valor per defecte
+  if (query.sortBy === "duration") {
+    orderByColumn = "Tracks.durationSeconds";
+  }
+
+  const orderDirection = query.sortOrder === "DESC" ? "DESC" : "ASC";
+  queryText += ` ORDER BY ${orderByColumn} ${orderDirection}`;
+
+  const page = query.page || 1;
+  const limit = query.limit || 10;
+  const rowsToSkip = (page - 1) * limit;
+
+  // Injectem els valors de la paginació com a paràmetres numèrics segurs
+  request.input("offset", sql.Int, rowsToSkip);
+  request.input("limit", sql.Int, limit);
+  
+  queryText += ` OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY`;
+
+
+  return queryText;
 }
 
 export async function getAllTracks(input: SearchTracksInput): Promise<TrackDto[]> {

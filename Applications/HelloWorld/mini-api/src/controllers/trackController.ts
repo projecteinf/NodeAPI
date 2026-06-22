@@ -15,7 +15,17 @@ export async function getTracksController(
     const querystring:SearchTracksInput = req.query;
     const tracks:TrackDto[] = await getAllTracks(querystring);
 
-    return res.status(200).json(tracks);
+    return res.status(200).json(
+      {
+        info:
+        {
+          "order":querystring.sortBy,
+          "orderType":querystring.sortOrder,
+          "page":querystring.page,
+          "limit":querystring.limit
+        },
+        "data":tracks
+      });
   } catch (error) {
       next(error);
   }
