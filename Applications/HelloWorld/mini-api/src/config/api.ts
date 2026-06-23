@@ -1,4 +1,4 @@
-import { ApiInfo } from "../types/Api/api";
+import { ApiInfo } from "../types/api/api";
 
 export const apiInfo: ApiInfo = {
     name: "MusicCloud API",

@@ -5,6 +5,10 @@ import { trackRouter } from "./routes/trackRoutes";
 import { errorHandler } from "./middlewares/errorHandler";
 import { authRouter } from "./routes/authRoutes";
 import { playlistsRouter } from "./routes/playlistsRouter";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./config/swagger";
+
+
 
 export const app: Express = express();
 
@@ -25,6 +29,7 @@ app.get("/", (_req: Request, res: Response) => {
   });
 });
 
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/tracks", trackRouter);
 app.use("/users", authRouter);
 app.use("/playlists", playlistsRouter);

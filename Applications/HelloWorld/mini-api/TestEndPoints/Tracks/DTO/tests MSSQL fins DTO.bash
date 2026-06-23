@@ -46,8 +46,10 @@ curl -i -X PUT http://localhost:3000/tracks/$IDCREATED \
 
 curl -i http://localhost:3000/tracks/$IDCREATED
 
-echo "====================================================================================================================="
+# echo "====================================================================================================================="
 
-echo "DELETE /tracks/{id} - Eliminar cançó"
+# echo "DELETE /tracks/{id} - Eliminar cançó"
+# curl -i -X DELETE http://localhost:3000/tracks/$IDCREATED 
+
+IDCREATED="784E36C8-465F-4B5C-AEE8-81E508AA9487"
 curl -i -X DELETE http://localhost:3000/tracks/$IDCREATED 
-
