@@ -9,9 +9,8 @@ import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger";
 import helmet from "helmet";
 import { apiLimiter } from "./config/rateLimiter";
-
-
-
+import { corsOptions } from "./config/cors";
+import cors from "cors";
 export const app: Express = express();
 
 app.use(express.json());
@@ -19,6 +18,7 @@ app.use(express.json());
 app.use(helmet()); // Activa les 15 capçaleres de seguretat automàtiques
 app.use(apiLimiter); // Aplica el límit de peticions a tota l'API
 
+app.use(cors(corsOptions)); 
 
 const environment = getEnvironment();
 
@@ -41,3 +41,5 @@ app.use("/users", authRouter);
 app.use("/playlists", playlistsRouter);
 
 app.use(errorHandler);
+
+
