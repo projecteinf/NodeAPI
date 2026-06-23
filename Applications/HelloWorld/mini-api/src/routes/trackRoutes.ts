@@ -191,6 +191,8 @@ trackRouter.put(
  *   delete:
  *     summary: Eliminar una cançó
  *     description: Elimina de manera permanent una cançó del sistema. Requereix autenticació.
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
