@@ -7,12 +7,18 @@ import { authRouter } from "./routes/authRoutes";
 import { playlistsRouter } from "./routes/playlistsRouter";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger";
+import helmet from "helmet";
+import { apiLimiter } from "./config/rateLimiter";
 
 
 
 export const app: Express = express();
 
 app.use(express.json());
+
+app.use(helmet()); // Activa les 15 capçaleres de seguretat automàtiques
+app.use(apiLimiter); // Aplica el límit de peticions a tota l'API
+
 
 const environment = getEnvironment();
 
