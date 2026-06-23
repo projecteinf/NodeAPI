@@ -13,7 +13,16 @@ const options: swaggerJSDoc.Options = {
         url: "http://localhost:3000",
         description: "Servidor Local"
       }
-    ]
+    ],
+    components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT" 
+        }
+      }
+    }
   },
   // Indiquem quins fitxers contenen els comentaris de documentació
   apis: ["./src/routes/*.ts", "./src/controllers/*.ts"] 
