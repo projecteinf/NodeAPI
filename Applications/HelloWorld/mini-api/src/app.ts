@@ -11,6 +11,8 @@ import helmet from "helmet";
 import { apiLimiter } from "./config/rateLimiter";
 import { corsOptions } from "./config/cors";
 import cors from "cors";
+import { logger } from "./config/logger";
+import morgan from "morgan";
 export const app: Express = express();
 
 app.use(express.json());
@@ -19,6 +21,15 @@ app.use(helmet()); // Activa les 15 capçaleres de seguretat automàtiques
 app.use(apiLimiter); // Aplica el límit de peticions a tota l'API
 
 app.use(cors(corsOptions)); 
+
+// Configurar Morgan perquè utilitzi el format 'dev' o 'combined' i ho enviï a Winston
+const morganStream = {
+  write: (message: string) => logger.info(message.trim())
+};
+
+// Injectem Morgan com a middleware global
+app.use(morgan(":method :url :status :res[content-length] - :response-time ms", { stream: morganStream }));2. 
+
 
 const environment = getEnvironment();
 

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ErrorCode, ErrorResponse } from "../types/error/errorResponse";
 import { AppError } from "../types/error/custom/appError";
+import { logger } from "../config/logger";
 
 export function errorHandler(
   error: unknown,
@@ -10,6 +11,8 @@ export function errorHandler(
 ): Response {
   // 1. Si és un error operacional nostre, responem amb les seves dades
   if (error instanceof AppError) {
+    // registrem error 404 Not Found per a detectar 
+    logger.warn(`Operation [${error.statusCode}] - ${error.code}: ${error.message}`);
     const response: ErrorResponse = {
       message: error.message,
       code: error.code
@@ -18,7 +21,7 @@ export function errorHandler(
   }
 
   // 2. Si l'error no és operational (bug, fallada de BD, etc.), fem log intern i responem 500
-  console.error("💥 ERROR INESPERAT:", error);
+  logger.error(error);
 
   const response: ErrorResponse = {
     message: "Internal server error",

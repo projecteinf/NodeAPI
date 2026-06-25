@@ -22,9 +22,11 @@
     "express-rate-limit": "^8.5.2",
     "helmet": "^8.2.0",
     "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.11.0",
     "mssql": "^12.5.5",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1",
+    "winston": "^3.19.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -32,6 +34,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
     "@types/mssql": "^12.3.0",
     "@types/node": "^25.8.0",
     "@types/swagger-jsdoc": "^6.0.4",
