@@ -1,6 +1,7 @@
 .obsidian
-Applications/**/node_modules/
+BACKEND/Applications/**/node_modules/
 /**/result.md
 /**/results.md
-Applications/HelloWorld/mini-api/data/
+BACKEND/Applications/HelloWorld/mini-api/data/
 /**/.env
+BACKEND/Applications/HelloWorld/AI-Generated/node_modules/
