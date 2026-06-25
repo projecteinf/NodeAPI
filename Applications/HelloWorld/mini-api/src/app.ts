@@ -13,6 +13,7 @@ import { corsOptions } from "./config/cors";
 import cors from "cors";
 import { logger } from "./config/logger";
 import morgan from "morgan";
+import apiRouter from "./routes";
 export const app: Express = express();
 
 app.use(express.json());
@@ -47,9 +48,7 @@ app.get("/", (_req: Request, res: Response) => {
 });
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.use("/tracks", trackRouter);
-app.use("/users", authRouter);
-app.use("/playlists", playlistsRouter);
+app.use("/", apiRouter); 
 
 app.use(errorHandler);
 
