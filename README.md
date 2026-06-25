@@ -40,3 +40,8 @@ By the end of this tutorial, students will be able to:
 | Traçabilitat del servidor: Logging professional (Winston/Morgan) | 40min     | 75min     |
 | Orquestració de l'entorn complet amb Docker Compose              | 35min     | 60min     |
 | TOTAL ESTIMAT                                                    | 13h 55min | 27h 15min |
+Resum de Totals Globals
+
+    📚 Total Teoria: 13 hores i 55 minuts
+    🛠️ Total Pràctica: 27 hores i 15 minuts
+    ⏱️ Còmput de la Formació Sencera: 41 hores i 10 minuts
