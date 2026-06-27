@@ -1,21 +1,38 @@
 # Índex 
 
-## Fonaments i Lògica de Programació (JavaScript pur)
+## Fonaments i Lògica de Programació 
 
 *L'objectiu és que l'alumne aprengui a programar sense la pressió de la interfície gràfica. Tot s'executa a la consola.*
 
-* **Unitat 1: Sintaxi bàsica i entorn d'execució**
-* Diferència entre client i servidor (molt bàsica, sense entrar en detalls de seguretat complexos).
-* Variables (`let`, `const`), tipus de dades i conversions.
-* Estructures de control: `if`, `switch`, bucles (`for`, `while`).
-* *Pràctica:* Crear un petit script de consola que simuli el flux de login d'un usuari (usuari correcte/incorrecte).
+* Sintaxi bàsica i entorn d'execució
 
+		* Diferència entre client i servidor.	
+		* Variables (`let`, `const`), tipus de dades i conversions.
+		* Estructures de control: `if`,  bucles (`for`).
+		* Depurador
+	
+	* Teoria: [T01.01 Sintaxi bàsica i entorn d'execució](Teoria/T01%20Fonaments%20i%20Lògica%20de%20Programació/T01.01%20Sintaxi%20bàsica%20i%20entorn%20d'execució.md) 
+	* Pràctica: [P01.01 Sintaxi bàsica i entorn d'execució](Pràctica/P01%20Fonaments%20i%20Lògica%20de%20Programació%201/P01.01%20Sintaxi%20bàsica%20i%20entorn%20d'execució.md)
+		* Solució: [S01.01 Sintaxi bàsica i entorn d'execució](Solucionari/S01.01%20Sintaxi%20bàsica%20i%20entorn%20d'execució.md)
+	
+	* Planificació
+		* Teoria: 30 minuts
+		* Pràctica: 30 minuts
 
-* **Unitat 2: Estructures de dades i funcions (El motor de Spotify)**
-* Definició de funcions (funcionals i *arrow functions*).
-* Matrius (Arrays) i operacions de col·leccions modernes: `map()`, `filter()`, `reduce()`.
-* Introducció als Objectes en JS i format JSON.
-* *Pràctica:* Crear una llista de cançons (un array d'objectes amb títol, artista, durada) i fer servir `.filter()` per buscar cançons d'un artista o `.map()` per llistar-les per consola.
+* Estructures de dades i funcions 
+
+		* Definició de funcions (funcionals i *arrow functions*).
+		* Matrius (Arrays) i operacions de col·leccions modernes: `map()`, `filter()`, `reduce()`.
+		* Introducció als Objectes en JS i format JSON.
+
+	* Teoria: [T01.02 Funcions, Arrays d'Objectes i Operacions Agregades](Teoria/T01%20Fonaments%20i%20Lògica%20de%20Programació/T01.02%20Funcions,%20Arrays%20d'Objectes%20i%20Operacions%20Agregades.md)
+	* Pràctica: [P01.02 Funcions, Arrays d'Objectes i Operacions Agregades](Pràctica/P01%20Fonaments%20i%20Lògica%20de%20Programació%201/P01.02%20Funcions,%20Arrays%20d'Objectes%20i%20Operacions%20Agregades.md)
+		* Solució: [S01.02 Funcions, Arrays d'Objectes i Operacions Agregades](Solucionari/S01.02%20Funcions,%20Arrays%20d'Objectes%20i%20Operacions%20Agregades.md)
+	
+	* Planificació
+		* Teoria: 30 minuts
+		* Pràctica: 30 minuts
+
 ## La interfície nativa (El DOM i els Esdeveniments)
 
 *Ara que saben manipular dades, aprenen com fer que aquestes dades es vegin a una pàgina web clàssica.*
