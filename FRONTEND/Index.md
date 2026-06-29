@@ -63,13 +63,20 @@
 		
 ## React i Components
 
-*Un cop l'alumne s'ha barallat amb el DOM natiu i veu com és de feixuc gestionar-ho a mà, introduïm React. Entendran perfectament per què és útil.*
+* **Introducció a React i JSX**
 
-* **Unitat 5: Introducció a React i JSX**
-* El concepte de SPA i per què serveix React en aplicacions grans com Spotify.
-* Instal·lació de l'entorn (Vite) i creació de components.
-* Estructura visual de Spotify en components: `Sidebar`, `Navbar`, `MainContent`, `PlayerBar`.
-
+		* El concepte de SPA i per què serveix React en aplicacions grans.
+		* Funcionament React.
+		* Llenguatge JSX.
+		* Copmponents.
+		
+	* Teoria: [T03.01 Introducció a React i JSX](Teoria/T03%20React%20i%20components/T03.01%20Introducció%20a%20React%20i%20JSX.md)
+	* Pràctica: [P03.01 Introducció a React i JSX](Pràctica/P03%20React%20i%20components/P03.01%20Introducció%20a%20React%20i%20JSX.md)
+		* Solució: [S03.01 Introducció a React i JSX](Solucionari/SOL03%20React%20i%20components/S03.01%20Introducció%20a%20React%20i%20JSX.md)
+	
+	* Planificació
+		* Teoria: 30 minuts
+		* Pràctica: 30 minuts
 
 * **Unitat 6: Estat (`useState`) i Esdeveniments a React**
 * Com reacciona React als clics (reproduir, pausar, passar de cançó).
